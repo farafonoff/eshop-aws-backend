@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "workspaces": [
+    "product-service"
+  ],
+  "scripts": {
+    "deploy": "yarn workspace product-service run serverless deploy",
+    "run-list": "yarn workspace product-service run sls invoke local --function getProductsList",
+    "run-get-by-id": "yarn workspace product-service run sls invoke local --function getProductsList"
+  }
+}
