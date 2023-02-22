@@ -6,7 +6,7 @@ export default {
     {
       http: {
         method: "get",
-        path: "getProductsList",
+        path: "products",
         /*request: {
           schemas: {
             "application/json": schema,
