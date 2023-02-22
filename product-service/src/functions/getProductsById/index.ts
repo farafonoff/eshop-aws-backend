@@ -7,11 +7,11 @@ export default {
     {
       http: {
         method: "get",
-        path: "products/{id}",
+        path: "products/{productId}",
         request: {
           parameters: {
             paths: {
-              id: true,
+              productId: true,
             },
           },
         },
