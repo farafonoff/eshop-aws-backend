@@ -4,8 +4,10 @@
     "product-service"
   ],
   "scripts": {
+    "test": "yarn workspace product-service test",
     "deploy": "yarn workspace product-service run serverless deploy",
+    "undeploy": "yarn workspace product-service run serverless remove",
     "run-list": "yarn workspace product-service run sls invoke local --function getProductsList",
-    "run-get-by-id": "yarn workspace product-service run sls invoke local --function getProductsList"
+    "run-get-by-id": "yarn workspace product-service run sls invoke local --function getProductsById --path src/functions/getProductsById/mock.json"
   }
 }
