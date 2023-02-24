@@ -5,14 +5,16 @@ export default {
   handler: `${handlerPath(__dirname)}/handler.main`,
   events: [
     {
-      http: {
+      httpApi: {
         method: "get",
-        path: "products/{productId}",
-        request: {
-          parameters: {
-            paths: {
-              productId: true,
-            },
+        path: "/products/{productId}",
+        responseData: {
+          200: {
+            description: "Product item",
+            bodyType: "Product",
+          },
+          404: {
+            description: "Product not found",
           },
         },
         /*request: {

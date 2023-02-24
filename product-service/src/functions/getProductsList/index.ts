@@ -4,9 +4,15 @@ export default {
   handler: `${handlerPath(__dirname)}/handler.main`,
   events: [
     {
-      http: {
+      httpApi: {
         method: "get",
-        path: "products",
+        path: "/products",
+        responseData: {
+          200: {
+            description: "Products List",
+            bodyType: "Products",
+          },
+        },
         /*request: {
           schemas: {
             "application/json": schema,
