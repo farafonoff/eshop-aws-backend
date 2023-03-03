@@ -9,5 +9,9 @@
     "undeploy": "yarn workspace product-service run serverless remove",
     "run-list": "yarn workspace product-service run sls invoke local --function getProductsList",
     "run-get-by-id": "yarn workspace product-service run sls invoke local --function getProductsById --path src/functions/getProductsById/mock.json"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.284.0",
+    "@aws-sdk/lib-dynamodb": "^3.284.0"
   }
 }

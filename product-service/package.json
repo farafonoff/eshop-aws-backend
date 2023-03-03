@@ -4,7 +4,8 @@
   "description": "Serverless aws-nodejs-typescript template",
   "main": "serverless.ts",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "putMockData": "npx ts-node  ./upload_data.cts"
   },
   "engines": {
     "node": ">=14.15.0"
