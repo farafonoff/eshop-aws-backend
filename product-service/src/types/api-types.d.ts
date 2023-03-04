@@ -7,3 +7,9 @@ export interface Product {
 }
 
 export type Products = Product[];
+
+export interface CreateProductRequest {
+  title: string;
+  description: string;
+  price: number;
+}

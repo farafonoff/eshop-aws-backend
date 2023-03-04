@@ -1,5 +1,10 @@
 import type { AWS } from "@serverless/typescript";
-import { getProductsById, getProductsList } from "@functions/index";
+import {
+  getProductsById,
+  getProductsList,
+  postProduct,
+  getProductsListAvailable,
+} from "@functions/index";
 import { REGION, TABLE_NAME } from "src/constants";
 
 const serverlessConfiguration: AWS = {
@@ -8,7 +13,7 @@ const serverlessConfiguration: AWS = {
   plugins: ["serverless-auto-swagger", "serverless-esbuild"],
   provider: {
     name: "aws",
-    runtime: "nodejs14.x",
+    runtime: "nodejs18.x",
     region: REGION,
     apiGateway: {
       minimumCompressionSize: 1024,
@@ -34,12 +39,25 @@ const serverlessConfiguration: AWS = {
       {
         Effect: "Allow",
         Action: ["dynamodb:*"],
-        Resource: [{ "Fn::GetAtt": ["ProductsTable", "Arn"] }],
+        Resource: [
+          { "Fn::GetAtt": ["ProductsTable", "Arn"] },
+          {
+            "Fn::Join": [
+              "",
+              [{ "Fn::GetAtt": ["ProductsTable", "Arn"] }, "/index/*"],
+            ],
+          },
+        ],
       },
     ],
   },
   // import the function via paths
-  functions: { getProductsList, getProductsById },
+  functions: {
+    getProductsList,
+    getProductsById,
+    postProduct,
+    getProductsListAvailable,
+  },
   package: { individually: true },
   custom: {
     esbuild: {
@@ -47,7 +65,7 @@ const serverlessConfiguration: AWS = {
       minify: false,
       sourcemap: true,
       exclude: ["aws-sdk"],
-      target: "node14",
+      target: "node18",
       define: { "require.resolve": undefined },
       platform: "node",
       concurrency: 10,
@@ -68,17 +86,47 @@ const serverlessConfiguration: AWS = {
               AttributeName: "id",
               AttributeType: "S",
             },
+            {
+              AttributeName: "count",
+              AttributeType: "N",
+            },
+            {
+              AttributeName: "price",
+              AttributeType: "N",
+            },
           ],
           KeySchema: [
             {
               AttributeName: "id",
               KeyType: "HASH",
             },
+            {
+              AttributeName: "price",
+              KeyType: "RANGE",
+            },
           ],
           ProvisionedThroughput: {
             ReadCapacityUnits: 2,
             WriteCapacityUnits: 2,
           },
+          LocalSecondaryIndexes: [
+            {
+              IndexName: "AvailableProducts",
+              KeySchema: [
+                {
+                  AttributeName: "id",
+                  KeyType: "HASH",
+                },
+                {
+                  AttributeName: "count",
+                  KeyType: "RANGE",
+                },
+              ],
+              Projection: {
+                ProjectionType: "ALL",
+              },
+            },
+          ],
         },
       },
     },
