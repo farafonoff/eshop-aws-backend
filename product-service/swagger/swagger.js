@@ -169,6 +169,10 @@
         "price": {
           "title": "CreateProductRequest.price",
           "type": "number"
+        },
+        "count": {
+          "title": "CreateProductRequest.count",
+          "type": "number"
         }
       },
       "required": [
