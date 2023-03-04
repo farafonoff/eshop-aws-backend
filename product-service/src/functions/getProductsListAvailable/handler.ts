@@ -4,7 +4,7 @@ import { getAllAvailableProducts } from "../../repository/products";
 
 export const getProductsListAvailable = async (event: APIGatewayEvent) => {
   console.log(`Invoke getProductsListAvailable`);
-  const count = Number(event?.pathParameters?.productId || 1);
+  const count = Number(event?.pathParameters?.count || 1);
   try {
     return {
       statusCode: 200,
