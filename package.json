@@ -1,17 +1,19 @@
 {
   "private": true,
   "workspaces": [
-    "product-service"
+    "product-service",
+    "import-service"
   ],
   "scripts": {
     "test": "yarn workspace product-service test",
-    "deploy": "yarn workspace product-service run serverless deploy",
-    "undeploy": "yarn workspace product-service run serverless remove",
+    "deploy": "yarn deploy:import && yarn deploy:products",
+    "deploy:import": "yarn workspace import-service run serverless deploy",
+    "deploy:products": "yarn workspace product-service run serverless deploy",
+    "undeploy": "yarn workspace product-service run serverless remove && yarn undeploy:import",
+    "undeploy:import": "yarn workspace import-service run serverless remove",
     "run-list": "yarn workspace product-service run sls invoke local --function getProductsList",
     "run-get-by-id": "yarn workspace product-service run sls invoke local --function getProductsById --path src/functions/getProductsById/mock.json"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.284.0",
-    "@aws-sdk/lib-dynamodb": "^3.284.0"
   }
 }
