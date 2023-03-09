@@ -5,9 +5,7 @@ describe("getProductsList", () => {
   it("should return products", async () => {
     const mockRequest = {};
     const result = (await getProductsList(
-      mockRequest as any,
-      null,
-      null
+      mockRequest as any
     )) as APIGatewayProxyResult;
     expect(result.statusCode).toEqual(200);
     expect(result.body).toBeTruthy();

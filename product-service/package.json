@@ -4,14 +4,18 @@
   "description": "Serverless aws-nodejs-typescript template",
   "main": "serverless.ts",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "putMockData": "npx ts-node  ./upload_data.cts"
   },
   "engines": {
     "node": ">=14.15.0"
   },
   "dependencies": {
-    "@middy/core": "^3.4.0",
-    "@middy/http-json-body-parser": "^3.4.0"
+    "@middy/core": "^4.2.6",
+    "@middy/http-error-handler": "^4.2.6",
+    "@middy/http-json-body-parser": "^4.2.6",
+    "@middy/validator": "^4.2.6",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.4.3",

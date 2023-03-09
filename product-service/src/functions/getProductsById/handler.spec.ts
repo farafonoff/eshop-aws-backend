@@ -7,9 +7,7 @@ describe("getProductById", () => {
       pathParameters: { productId: "7567ec4b-b10c-48c5-9345-fc73c48a80a3" },
     };
     const result = (await getProductsById(
-      mockRequest as any,
-      null,
-      null
+      mockRequest as any
     )) as APIGatewayProxyResult;
     expect(result.statusCode).toEqual(200);
     expect(result.body).toBeTruthy();
@@ -17,12 +15,10 @@ describe("getProductById", () => {
 
   it("should return 404 for missing id", async () => {
     const mockRequest = {
-      pathParameters: { productId: "missing" },
+      pathParameters: { productId: "missing id" },
     };
     const result = (await getProductsById(
-      mockRequest as any,
-      null,
-      null
+      mockRequest as any
     )) as APIGatewayProxyResult;
     expect(result.statusCode).toEqual(404);
   });

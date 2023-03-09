@@ -26,6 +26,36 @@
             }
           }
         }
+      },
+      "post": {
+        "summary": "postProduct",
+        "description": "",
+        "operationId": "postProduct.post./products",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Body required in the request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateProductRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Freshly inserted product",
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          }
+        }
       }
     },
     "/products/{productId}": {
@@ -56,6 +86,28 @@
           },
           "404": {
             "description": "Product not found"
+          }
+        }
+      }
+    },
+    "/products/available": {
+      "get": {
+        "summary": "getProductsListAvailable",
+        "description": "",
+        "operationId": "getProductsListAvailable.get./products/available",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Products List",
+            "schema": {
+              "$ref": "#/definitions/Products"
+            }
           }
         }
       }
@@ -103,6 +155,34 @@
       },
       "title": "Products.[]",
       "type": "array"
+    },
+    "CreateProductRequest": {
+      "properties": {
+        "title": {
+          "title": "CreateProductRequest.title",
+          "type": "string"
+        },
+        "description": {
+          "title": "CreateProductRequest.description",
+          "type": "string"
+        },
+        "price": {
+          "title": "CreateProductRequest.price",
+          "type": "number"
+        },
+        "count": {
+          "title": "CreateProductRequest.count",
+          "type": "number"
+        }
+      },
+      "required": [
+        "title",
+        "description",
+        "price"
+      ],
+      "additionalProperties": false,
+      "title": "CreateProductRequest",
+      "type": "object"
     }
   },
   "securityDefinitions": {}
