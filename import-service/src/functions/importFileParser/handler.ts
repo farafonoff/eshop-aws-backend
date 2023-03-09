@@ -8,16 +8,18 @@ import {
 import { S3Event } from "aws-lambda";
 import { UPLOAD_PREFIX } from "../../../constants";
 import csvParser from "csv-parser";
+import stripBom from "strip-bom-stream";
 import { Readable } from "node:stream";
 const client = new S3Client({});
 
-async function processFile(key: string, bucket: string) {
+export const processFile = async (key: string, bucket: string) => {
   const read = new GetObjectCommand({
     Key: key,
     Bucket: bucket,
   });
   const response = await client.send(read);
   const pipe = (response.Body as Readable)
+    .pipe(stripBom())
     .pipe(
       csvParser({
         separator: ";",
@@ -28,9 +30,8 @@ async function processFile(key: string, bucket: string) {
     pipe.on("end", resolve);
     pipe.on("error", reject);
   });
-}
-
-async function moveToProcessed(key: string, bucket: string) {
+};
+export const moveToProcessed = async (key: string, bucket: string) => {
   const copyInput: CopyObjectCommandInput = {
     Bucket: bucket,
     CopySource: `${bucket}/${key}`,
@@ -38,15 +39,13 @@ async function moveToProcessed(key: string, bucket: string) {
   };
   await client.send(new CopyObjectCommand(copyInput));
   await client.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
-}
+};
 
 const importProductsParser = async (event: S3Event) => {
-  console.log(event);
   await Promise.all(
     event.Records.map(async (record) => {
       await processFile(record.s3.object.key, record.s3.bucket.name);
       await moveToProcessed(record.s3.object.key, record.s3.bucket.name);
-      console.log(JSON.stringify(record));
     })
   );
 };
