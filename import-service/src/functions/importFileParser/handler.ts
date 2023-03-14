@@ -10,13 +10,30 @@ import { UPLOAD_PREFIX } from "../../../constants";
 import csvParser from "csv-parser";
 import stripBom from "strip-bom-stream";
 import { Readable } from "node:stream";
+import middy from "@middy/core";
+import ssm from "@middy/ssm";
+import { SendMessageBatchCommand, SQSClient } from "@aws-sdk/client-sqs";
 const client = new S3Client({});
+const sqsClient = new SQSClient({});
+
+export const sendToQueue = (queueUrl: string, record: object[]) => {
+  sqsClient.send(
+    new SendMessageBatchCommand({
+      QueueUrl: queueUrl,
+      Entries: record.map((record, index) => ({
+        Id: String(index),
+        MessageBody: JSON.stringify(record),
+      })),
+    })
+  );
+};
 
 export const processFile = async (key: string, bucket: string) => {
   const read = new GetObjectCommand({
     Key: key,
     Bucket: bucket,
   });
+  const records = [];
   const response = await client.send(read);
   const pipe = (response.Body as Readable)
     .pipe(stripBom())
@@ -25,11 +42,15 @@ export const processFile = async (key: string, bucket: string) => {
         separator: ";",
       })
     )
-    .on("data", (data) => console.log(data));
+    .on("data", (data) => {
+      console.log(data);
+      records.push(data);
+    });
   await new Promise((resolve, reject) => {
     pipe.on("end", resolve);
     pipe.on("error", reject);
   });
+  return records;
 };
 export const moveToProcessed = async (key: string, bucket: string) => {
   const copyInput: CopyObjectCommandInput = {
@@ -41,13 +62,25 @@ export const moveToProcessed = async (key: string, bucket: string) => {
   await client.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
 };
 
-const importProductsParser = async (event: S3Event) => {
+export const importProductsParser = async (event: S3Event, context) => {
+  console.log(context);
   await Promise.all(
     event.Records.map(async (record) => {
-      await processFile(record.s3.object.key, record.s3.bucket.name);
+      const records = await processFile(
+        record.s3.object.key,
+        record.s3.bucket.name
+      );
+      await sendToQueue(context.queueUrl, records);
       await moveToProcessed(record.s3.object.key, record.s3.bucket.name);
     })
   );
 };
 
-export const main = importProductsParser;
+export const main = middy(importProductsParser).use(
+  ssm({
+    fetchData: {
+      queueUrl: "CatalogItemsQueue",
+    },
+    setToContext: true,
+  })
+);

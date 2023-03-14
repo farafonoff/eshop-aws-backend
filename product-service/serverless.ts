@@ -4,8 +4,11 @@ import {
   getProductsList,
   postProduct,
   getProductsListAvailable,
+  catalogBatchProcess,
 } from "@functions/index";
-import { REGION, TABLE_NAME } from "src/constants";
+import { REGION } from "./src/constants";
+import { ProductsTable } from "./resources/dynamodb";
+import { ImportQueue } from "./resources/sqs";
 
 const serverlessConfiguration: AWS = {
   service: "product-service",
@@ -57,6 +60,7 @@ const serverlessConfiguration: AWS = {
     getProductsById,
     postProduct,
     getProductsListAvailable,
+    catalogBatchProcess,
   },
   package: { individually: true },
   custom: {
@@ -77,58 +81,8 @@ const serverlessConfiguration: AWS = {
   },
   resources: {
     Resources: {
-      ProductsTable: {
-        Type: "AWS::DynamoDB::Table",
-        Properties: {
-          TableName: TABLE_NAME,
-          AttributeDefinitions: [
-            {
-              AttributeName: "id",
-              AttributeType: "S",
-            },
-            {
-              AttributeName: "count",
-              AttributeType: "N",
-            },
-            {
-              AttributeName: "price",
-              AttributeType: "N",
-            },
-          ],
-          KeySchema: [
-            {
-              AttributeName: "id",
-              KeyType: "HASH",
-            },
-            {
-              AttributeName: "price",
-              KeyType: "RANGE",
-            },
-          ],
-          ProvisionedThroughput: {
-            ReadCapacityUnits: 2,
-            WriteCapacityUnits: 2,
-          },
-          LocalSecondaryIndexes: [
-            {
-              IndexName: "AvailableProducts",
-              KeySchema: [
-                {
-                  AttributeName: "id",
-                  KeyType: "HASH",
-                },
-                {
-                  AttributeName: "count",
-                  KeyType: "RANGE",
-                },
-              ],
-              Projection: {
-                ProjectionType: "ALL",
-              },
-            },
-          ],
-        },
-      },
+      ...ProductsTable,
+      ...ImportQueue,
     },
   },
 };

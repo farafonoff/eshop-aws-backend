@@ -1,5 +1,8 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
+  BatchWriteCommand,
+  BatchWriteCommandInput,
+  BatchWriteCommandOutput,
   DynamoDBDocumentClient,
   GetCommand,
   PutCommand,
@@ -57,4 +60,29 @@ export async function putProduct(product: Product) {
       },
     })
   );
+}
+
+export async function batchPutProduct(products: Product[]): Promise<string[]> {
+  const putRequests = products.map((product) => {
+    return {
+      PutRequest: {
+        Item: product,
+      },
+    };
+  });
+
+  const batch: BatchWriteCommandInput = {
+    RequestItems: {
+      [TABLE_NAME]: putRequests,
+    },
+  };
+
+  const result = await documentClient.send(new BatchWriteCommand(batch));
+  const failedIds: string[] =
+    result.UnprocessedItems[TABLE_NAME]?.map(
+      (putRequest) => putRequest?.PutRequest?.Item?.id
+    ) || [];
+  console.log(`Batch write result`, result);
+  console.log(failedIds);
+  return failedIds;
 }

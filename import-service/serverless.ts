@@ -3,7 +3,7 @@ import type { AWS } from "@serverless/typescript";
 import importProductsFile from "@functions/importProductsFile";
 import importFileParser from "@functions/importFileParser";
 
-import { UPLOAD_BUCKET_NAME } from "./constants";
+import { REGION, UPLOAD_BUCKET_NAME } from "./constants";
 
 const serverlessConfiguration: AWS = {
   service: "import-service",
@@ -12,7 +12,7 @@ const serverlessConfiguration: AWS = {
   provider: {
     name: "aws",
     runtime: "nodejs18.x",
-    region: "us-east-2",
+    region: REGION,
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
@@ -43,6 +43,15 @@ const serverlessConfiguration: AWS = {
         Effect: "Allow",
         Action: ["s3:*"],
         Resource: `arn:aws:s3:::${UPLOAD_BUCKET_NAME}`,
+      },
+      {
+        Effect: "Allow",
+        Action: [
+          "ssm:GetParameter",
+          "ssm:GetParameters",
+          "ssm:GetParametersByPath",
+        ],
+        Resource: `arn:aws:ssm:${REGION}::parameter/CatalogItemsQueue`,
       },
     ],
   },
