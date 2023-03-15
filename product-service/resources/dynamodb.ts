@@ -13,26 +13,18 @@ export const ProductsTable = {
           AttributeName: "count",
           AttributeType: "N",
         },
-        {
-          AttributeName: "price",
-          AttributeType: "N",
-        },
       ],
       KeySchema: [
         {
           AttributeName: "id",
           KeyType: "HASH",
         },
-        {
-          AttributeName: "price",
-          KeyType: "RANGE",
-        },
       ],
       ProvisionedThroughput: {
         ReadCapacityUnits: 2,
         WriteCapacityUnits: 2,
       },
-      LocalSecondaryIndexes: [
+      GlobalSecondaryIndexes: [
         {
           IndexName: "AvailableProducts",
           KeySchema: [
@@ -47,6 +39,10 @@ export const ProductsTable = {
           ],
           Projection: {
             ProjectionType: "ALL",
+          },
+          ProvisionedThroughput: {
+            ReadCapacityUnits: 1,
+            WriteCapacityUnits: 1,
           },
         },
       ],

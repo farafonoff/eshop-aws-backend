@@ -51,7 +51,6 @@ export const processFile = async (
       })
     )
     .on("data", (data) => {
-      console.log(data);
       sendToQueue(queueUrl, data);
     });
   await new Promise((resolve, reject) => {

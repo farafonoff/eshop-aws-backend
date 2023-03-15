@@ -9,6 +9,7 @@ import {
 import { REGION } from "./src/constants";
 import { ProductsTable } from "./resources/dynamodb";
 import { ImportQueue } from "./resources/sqs";
+import { Notifications } from "./resources/notifications";
 
 const serverlessConfiguration: AWS = {
   service: "product-service",
@@ -52,6 +53,11 @@ const serverlessConfiguration: AWS = {
           },
         ],
       },
+      {
+        Effect: "Allow",
+        Action: ["sns:Publish"],
+        Resource: [{ "Fn::GetAtt": ["Notifications", "TopicArn"] }],
+      },
     ],
   },
   // import the function via paths
@@ -83,6 +89,7 @@ const serverlessConfiguration: AWS = {
     Resources: {
       ...ProductsTable,
       ...ImportQueue,
+      ...Notifications,
     },
   },
 };

@@ -2,11 +2,9 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
   BatchWriteCommand,
   BatchWriteCommandInput,
-  BatchWriteCommandOutput,
   DynamoDBDocumentClient,
   GetCommand,
   PutCommand,
-  QueryCommand,
   ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { REGION, TABLE_NAME } from "../constants";
