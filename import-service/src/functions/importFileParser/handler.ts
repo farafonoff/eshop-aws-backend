@@ -16,11 +16,18 @@ import { SendMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
 const client = new S3Client({});
 const sqsClient = new SQSClient({});
 
-export const sendToQueue = async (queueUrl: string, record: object) => {
+export const sendToQueue = async (queueUrl: string, record: any) => {
+  const productRecord = {
+    id: record.id,
+    title: record.title,
+    description: record.description,
+    price: Number(record.price),
+    count: Number(record.count),
+  };
   const sendResult = await sqsClient.send(
     new SendMessageCommand({
       QueueUrl: queueUrl,
-      MessageBody: JSON.stringify(record),
+      MessageBody: JSON.stringify(productRecord),
     })
   );
   console.log("Messages send result", sendResult);

@@ -5,7 +5,8 @@
   "main": "serverless.ts",
   "scripts": {
     "test": "jest",
-    "putMockData": "npx ts-node  ./upload_data.cts"
+    "putMockData": "npx ts-node  ./upload_data.cts",
+    "run-batch-process": "sls invoke local --function catalogBatchProcess --path src/functions/catalogBatchProcess/mockRequest.json"
   },
   "engines": {
     "node": ">=14.15.0"
