@@ -13,7 +13,6 @@ import { Readable } from "node:stream";
 import middy from "@middy/core";
 import ssm from "@middy/ssm";
 import { SendMessageBatchCommand, SQSClient } from "@aws-sdk/client-sqs";
-import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
 const client = new S3Client({});
 const sqsClient = new SQSClient({});
 
@@ -25,12 +24,13 @@ export const sendToQueue = async (queueUrl: string, record: object[]) => {
   const chunkSize = 10;
   for (let i = 0; i < entries.length; i += chunkSize) {
     const chunk = entries.slice(i, i + chunkSize);
-    await sqsClient.send(
+    const sendResult = await sqsClient.send(
       new SendMessageBatchCommand({
         QueueUrl: queueUrl,
         Entries: chunk,
       })
     );
+    console.log("Messages send result", sendResult);
   }
 };
 
