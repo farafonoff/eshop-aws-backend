@@ -51,7 +51,24 @@ const serverlessConfiguration: AWS = {
           "ssm:GetParameters",
           "ssm:GetParametersByPath",
         ],
-        Resource: `arn:aws:ssm:${REGION}::parameter/CatalogItemsQueue`,
+        Resource: {
+          "Fn::Join": [
+            ":",
+            [
+              "arn",
+              "aws",
+              "ssm",
+              { Ref: "AWS::Region" },
+              { Ref: "AWS::AccountId" },
+              "parameter/CatalogItemsQueue",
+            ],
+          ],
+        },
+      },
+      {
+        Effect: "Allow",
+        Action: ["sqs:*"],
+        Resource: "*",
       },
     ],
   },

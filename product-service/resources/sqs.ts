@@ -7,7 +7,7 @@ export const ImportQueue = {
     Properties: {
       Name: "CatalogItemsQueue",
       Type: "String",
-      Value: { "Fn::GetAtt": ["CatalogItemsQueue", "Arn"] },
+      Value: { "Fn::GetAtt": ["CatalogItemsQueue", "QueueUrl"] },
     },
   },
 };

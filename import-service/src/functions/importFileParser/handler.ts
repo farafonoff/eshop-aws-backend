@@ -13,19 +13,25 @@ import { Readable } from "node:stream";
 import middy from "@middy/core";
 import ssm from "@middy/ssm";
 import { SendMessageBatchCommand, SQSClient } from "@aws-sdk/client-sqs";
+import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
 const client = new S3Client({});
 const sqsClient = new SQSClient({});
 
-export const sendToQueue = (queueUrl: string, record: object[]) => {
-  sqsClient.send(
-    new SendMessageBatchCommand({
-      QueueUrl: queueUrl,
-      Entries: record.map((record, index) => ({
-        Id: String(index),
-        MessageBody: JSON.stringify(record),
-      })),
-    })
-  );
+export const sendToQueue = async (queueUrl: string, record: object[]) => {
+  const entries = record.map((record, index) => ({
+    Id: String(index),
+    MessageBody: JSON.stringify(record),
+  }));
+  const chunkSize = 10;
+  for (let i = 0; i < entries.length; i += chunkSize) {
+    const chunk = entries.slice(i, i + chunkSize);
+    await sqsClient.send(
+      new SendMessageBatchCommand({
+        QueueUrl: queueUrl,
+        Entries: chunk,
+      })
+    );
+  }
 };
 
 export const processFile = async (key: string, bucket: string) => {
@@ -63,7 +69,6 @@ export const moveToProcessed = async (key: string, bucket: string) => {
 };
 
 export const importProductsParser = async (event: S3Event, context) => {
-  console.log(context);
   await Promise.all(
     event.Records.map(async (record) => {
       const records = await processFile(
