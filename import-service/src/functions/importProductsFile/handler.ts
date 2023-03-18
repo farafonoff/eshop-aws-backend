@@ -1,9 +1,8 @@
 import { middyfy } from "@libs/lambda";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { UPLOAD_BUCKET_NAME } from "../../../constants";
+import { UPLOAD_BUCKET_NAME, UPLOAD_PREFIX, REGION } from "../../../constants";
 import { APIGatewayEvent } from "aws-lambda";
-import { UPLOAD_PREFIX } from "../../../constants";
 const client = new S3Client({});
 
 const importProductsFile = async (event: APIGatewayEvent) => {

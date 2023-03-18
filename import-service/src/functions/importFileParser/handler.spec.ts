@@ -40,7 +40,7 @@ describe("importProductsParser", () => {
     });
     const moveSpy = jest.spyOn(handler, "moveToProcessed");
     const parseSpy = jest.spyOn(handler, "processFile");
-    await handler.main({ Records: [mockRecord] });
+    await handler.importProductsParser({ Records: [mockRecord] }, {});
     expect(moveSpy).toBeCalledTimes(1);
     expect(parseSpy).toBeCalledTimes(1);
     expect(lines).toHaveLength(20);
@@ -59,12 +59,15 @@ describe("importProductsParser", () => {
     });
     const moveSpy = jest.spyOn(handler, "moveToProcessed");
     const parseSpy = jest.spyOn(handler, "processFile");
-    await handler.main({ Records: [mockRecord, mockRecord] });
+    await handler.importProductsParser(
+      { Records: [mockRecord, mockRecord] },
+      {}
+    );
     expect(moveSpy).toBeCalledTimes(2);
     expect(parseSpy).toBeCalledTimes(2);
   });
   it("should move file to processed", async () => {
-    await handler.main({ Records: [mockRecord] });
+    await handler.importProductsParser({ Records: [mockRecord] }, {});
     expect(s3Client).toHaveReceivedCommandWith(CopyObjectCommand, {
       Bucket: "bucket",
       CopySource: "bucket/uploaded/file.csv",
