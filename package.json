@@ -8,7 +8,7 @@
   "scripts": {
     "create-service": "serverless create --template aws-nodejs-typescript --path ",
     "test": "yarn workspace product-service test",
-    "deploy": "yarn deploy:import && yarn deploy:products",
+    "deploy": "yarn deploy:auth && yarn deploy:products && yarn deploy:import",
     "deploy:import": "yarn workspace import-service run serverless deploy",
     "deploy:products": "yarn workspace product-service run serverless deploy",
     "deploy:auth": "yarn workspace authorization-service run serverless deploy",
