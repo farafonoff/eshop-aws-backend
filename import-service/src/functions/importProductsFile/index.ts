@@ -7,6 +7,9 @@ export default {
       httpApi: {
         method: "get",
         path: "/import",
+        authorizer: {
+          name: "myBasicAuthorizer",
+        },
       },
     },
   ],

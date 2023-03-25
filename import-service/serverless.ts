@@ -32,6 +32,13 @@ const serverlessConfiguration: AWS = {
         allowCredentials: true,
         allowedHeaders: ["Content-Type", "Authorization"],
       },
+      authorizers: {
+        myBasicAuthorizer: {
+          type: "request",
+          functionArn:
+            "${cf:authorization-service-${sls:stage}.BasicAuthorizerLambdaFunctionQualifiedArn}",
+        },
+      },
     },
     iamRoleStatements: [
       {
