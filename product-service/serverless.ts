@@ -19,6 +19,7 @@ const serverlessConfiguration: AWS = {
     name: "aws",
     runtime: "nodejs18.x",
     region: REGION,
+    architecture: "arm64",
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
