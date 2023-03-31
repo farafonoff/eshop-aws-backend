@@ -12,6 +12,7 @@ const serverlessConfiguration: AWS = {
   provider: {
     name: "aws",
     runtime: "nodejs18.x",
+    architecture: "arm64",
     region: REGION,
     apiGateway: {
       minimumCompressionSize: 1024,
@@ -31,6 +32,13 @@ const serverlessConfiguration: AWS = {
         allowedMethods: ["GET", "POST"],
         allowCredentials: true,
         allowedHeaders: ["Content-Type", "Authorization"],
+      },
+      authorizers: {
+        myBasicAuthorizer: {
+          type: "request",
+          functionArn:
+            "${cf:authorization-service-${sls:stage}.BasicAuthorizerLambdaFunctionQualifiedArn}",
+        },
       },
     },
     iamRoleStatements: [

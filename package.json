@@ -2,18 +2,21 @@
   "private": true,
   "workspaces": [
     "product-service",
-    "import-service"
+    "import-service",
+    "authorization-service"
   ],
   "scripts": {
+    "create-service": "serverless create --template aws-nodejs-typescript --path ",
     "test": "yarn workspace product-service test",
-    "deploy": "yarn deploy:import && yarn deploy:products",
+    "deploy": "yarn deploy:auth && yarn deploy:products && yarn deploy:import",
     "deploy:import": "yarn workspace import-service run serverless deploy",
     "deploy:products": "yarn workspace product-service run serverless deploy",
+    "deploy:auth": "yarn workspace authorization-service run serverless deploy",
+    "deploy:auth-import": "yarn deploy:auth; yarn deploy:import",
     "undeploy": "yarn workspace product-service run serverless remove && yarn undeploy:import",
     "undeploy:import": "yarn workspace import-service run serverless remove",
     "run-list": "yarn workspace product-service run sls invoke local --function getProductsList",
     "run-get-by-id": "yarn workspace product-service run sls invoke local --function getProductsById --path src/functions/getProductsById/mock.json"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
