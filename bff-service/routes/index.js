@@ -5,8 +5,8 @@ var router = express.Router();
 router.get("/", function (req, res, next) {
   res.render("index", {
     title: "Express",
-    cartApi: process.env.cart_api,
-    productApi: process.env.product_api,
+    cartApi: process.env["cart-api"],
+    productApi: process.env["product_api"],
   });
 });
 
